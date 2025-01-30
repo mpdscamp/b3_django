@@ -1,0 +1,72 @@
+<!-- templates/registration/profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}Profile - B3 Monitor{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>
+        <i class="fas fa-user"></i>
+        Profile Settings
+    </h1>
+</div>
+
+<div class="profile-grid">
+    <div class="card">
+        <div class="card-header">
+            <h2>Email Settings</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email for Price Alerts</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors|join:", " }}</div>
+                    {% endif %}
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i>
+                        You will receive notifications at this email when your monitored assets cross their price tunnels.
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Change Password</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="password-form">
+                {% csrf_token %}
+                <input type="hidden" name="password_change" value="1">
+                
+                {% for field in password_form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

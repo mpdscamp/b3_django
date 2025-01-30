@@ -1,0 +1,42 @@
+<!-- templates/assets/asset_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block title %}Remove Asset - B3 Monitor{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>
+        <i class="fas fa-trash"></i>
+        Remove Asset
+    </h1>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Confirm Deletion</h2>
+    </div>
+    <div class="card-body">
+        <p class="confirmation-message">
+            Are you sure you want to stop monitoring 
+            <strong>{{ object.available_asset.ticker }}</strong> 
+            ({{ object.available_asset.name }})?
+        </p>
+        <p class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            This will delete all historical price data and monitoring settings for this asset.
+        </p>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Yes, Remove Asset
+                </button>
+                <a href="{% url 'asset_detail' object.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ asset.available_asset.ticker }} Details - B3 Monitor{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="content-header-main">
+        <h1>
+            <i class="fas fa-chart-line"></i>
+            {{ asset.available_asset.ticker }}
+        </h1>
+        <span class="asset-name">{{ asset.available_asset.name }}</span>
+    </div>
+    <div class="content-header-actions">
+        <a href="{% url 'asset_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Assets
+        </a>
+        <a href="{% url 'asset_delete' asset.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Remove Asset
+        </a>
+    </div>
+</div>
+
+<div class="detail-layout">
+    <!-- Top Row: Configuration and Price History side by side -->
+    <div class="detail-top-row">
+        <!-- Configuration Section -->
+        <div class="config-section detail-card">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-cog"></i> Configuration</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'update_config' asset.pk %}" class="config-form">
+                        {% csrf_token %}
+                        <fieldset>
+                            <legend><i class="fas fa-tunnel"></i> Price Tunnel</legend>
+                            {{ tunnel_form.as_p }}
+                        </fieldset>
+                        <fieldset>
+                            <legend><i class="fas fa-clock"></i> Check Frequency</legend>
+                            {{ frequency_form.as_p }}
+                        </fieldset>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Price History Table Section -->
+        <div class="history-section detail-card">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-history"></i> Price History</h2>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-container">
+                            <table class="price-table">
+                                <thead>
+                                    <tr>
+                                        <th>Price</th>
+                                        <th>Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for price in page_obj %}
+                                    <tr>
+                                        <td>${{ price.price }}</td>
+                                        <td>{{ price.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if page_obj.paginator.num_pages > 1 %}
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page=1" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-angle-double-left"></i> First
+                                    </a>
+                                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-angle-left"></i> Previous
+                                    </a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary btn-sm">
+                                        Next <i class="fas fa-angle-right"></i>
+                                    </a>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary btn-sm">
+                                        Last <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-chart-area"></i>
+                            <p>No price history available yet.</p>
+                            <p>Price data will appear here after the first check.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Full-width Chart -->
+    <div class="chart-section detail-card">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-chart-line"></i> Price Chart</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all price data for the chart
+        const priceData = JSON.parse('{{ price_data|escapejs }}');
+        
+        if (priceData.length > 0) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            // Get price tunnel limits
+            const lowerLimit = "{{ asset.price_tunnel.lower_limit|default:'null' }}";
+            const upperLimit = "{{ asset.price_tunnel.upper_limit|default:'null' }}";
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: priceData.map(d => new Date(d.timestamp).toLocaleString()),
+                    datasets: [
+                        {
+                            label: 'Price',
+                            data: priceData.map(d => d.price),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Upper Limit',
+                            data: Array(priceData.length).fill(upperLimit),
+                            borderColor: '#dc2626',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'Lower Limit',
+                            data: Array(priceData.length).fill(lowerLimit),
+                            borderColor: '#16a34a',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Price ($)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD'
+                                        }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

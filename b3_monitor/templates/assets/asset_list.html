@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Assets - B3 Monitor{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>
+        <i class="fas fa-chart-pie"></i>
+        Monitored Assets
+    </h1>
+    <a href="{% url 'asset_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Asset
+    </a>
+</div>
+
+<!-- Search and Sort Controls -->
+<div class="controls-container">
+    <form method="get" class="search-form">
+        <div class="search-group">
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search_query }}" 
+                placeholder="Search by ticker or name..."
+                class="search-input"
+            >
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="sort-group">
+            <select name="sort" class="sort-select" onchange="this.form.submit()">
+                <option value="ticker" {% if sort_by == 'ticker' %}selected{% endif %}>
+                    Ticker (A-Z)
+                </option>
+                <option value="-ticker" {% if sort_by == '-ticker' %}selected{% endif %}>
+                    Ticker (Z-A)
+                </option>
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>
+                    Name (A-Z)
+                </option>
+                <option value="-name" {% if sort_by == '-name' %}selected{% endif %}>
+                    Name (Z-A)
+                </option>
+                <option value="frequency" {% if sort_by == 'frequency' %}selected{% endif %}>
+                    Check Frequency (Low to High)
+                </option>
+                <option value="-frequency" {% if sort_by == '-frequency' %}selected{% endif %}>
+                    Check Frequency (High to Low)
+                </option>
+            </select>
+        </div>
+    </form>
+</div>
+
+{% if assets %}
+<div class="card-grid">
+    {% for asset in assets %}
+    <div class="card">
+        <div class="card-header">
+            <h3>{{ asset.available_asset.ticker }}</h3>
+            <span class="asset-name">{{ asset.available_asset.name }}</span>
+        </div>
+        <div class="card-body">
+            {% if asset.price_tunnel %}
+            <div class="price-limits">
+                <div class="limit">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>Lower: ${{ asset.price_tunnel.lower_limit }}</span>
+                </div>
+                <div class="limit">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Upper: ${{ asset.price_tunnel.upper_limit }}</span>
+                </div>
+            </div>
+            {% endif %}
+            {% if asset.frequency %}
+            <div class="frequency">
+                <i class="fas fa-clock"></i>
+                Check every {{ asset.frequency.interval_minutes }} minutes
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'asset_detail' asset.pk %}" class="btn btn-secondary">
+                <i class="fas fa-eye"></i> View Details
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    {% if search_query %}
+    <div class="empty-state">
+        <i class="fas fa-search"></i>
+        <p>No assets found matching "{{ search_query }}"</p>
+        <p><a href="{% url 'asset_list' %}">Clear search</a></p>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-search"></i>
+        <p>No assets being monitored yet.</p>
+        <p>Click "Add New Asset" to start monitoring!</p>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

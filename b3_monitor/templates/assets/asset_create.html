@@ -1,0 +1,41 @@
+<!-- templates/assets/asset_create.html -->
+{% extends 'base.html' %}
+
+{% block title %}Add New Asset - B3 Monitor{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>
+        <i class="fas fa-plus-circle"></i>
+        Add New Asset
+    </h1>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Select Asset to Monitor</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" class="create-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-message">{{ field.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create
+                </button>
+                <a href="{% url 'asset_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

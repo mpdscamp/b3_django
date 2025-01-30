@@ -1,0 +1,67 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}B3 Monitor{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-chart-line"></i>
+            {% if user.is_authenticated %}
+                <a href="{% url 'asset_list' %}">B3 Monitor</a>
+            {% else %}
+                <a href="{% url 'landing_page' %}">B3 Monitor</a>
+            {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="navbar-menu">
+            <span class="welcome-text">Welcome, {{ user.username }}</span>
+            <a href="{% url 'profile' %}" class="nav-link">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+                <button class="close-message">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 B3 Monitor. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.close-message').forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
