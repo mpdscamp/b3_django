@@ -2,6 +2,8 @@
 
 Real-time monitoring system for B3 (Brazil Stock Exchange) assets with customizable price tunnels and email alerts.
 
+![image](https://github.com/user-attachments/assets/3df4378f-c577-4557-9a44-ee499177acfe)
+
 ## Features
 
 - Automated price monitoring with customizable intervals
