@@ -1,5 +1,3 @@
-# assets/views.py
-
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
@@ -214,16 +212,20 @@ class CustomLoginView(LoginView):
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Remove help_text from all fields
-        for field in self.fields.values():
-            field.help_text = None
+    usable_password = None
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
+        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
 
 class SignUpView(CreateView):
     form_class = SignUpForm

@@ -1,5 +1,3 @@
-# assets/urls.py
-
 from django.urls import path
 from .views import (
     AssetListView, AssetCreateView, AssetDetailView, 

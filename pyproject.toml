@@ -1,0 +1,35 @@
+[project]
+name = "b3-django"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "mpdscamp", email = "mpdscamp@gmail.com" }
+]
+dependencies = [
+    "django==5.1",
+    "celery==5.4.0",
+    "redis==5.2.1",
+    "yfinance==0.2.52",
+    "requests==2.32.3",
+    "python-dotenv (>=1.0.1,<2.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.0"
+flake8 = "^7.1.1"
+pytest = "^8.3.4"
+pytest-django = "^4.9.0"
+coverage = "^7.6.10"
+
+[tool.poetry]
+packages = [
+  { include = "b3_monitor" },
+  { include = "assets" }
+]

@@ -1,12 +1,132 @@
-<!-- templates/landing_page.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B3 Monitor - Stock Market Monitoring Made Easy</title>
+    <title>B3 Monitor - Smart Stock Market Monitoring</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <style>
+        .landing-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+
+        .hero-section {
+            padding: 6rem 1rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 3rem;
+        }
+
+        .hero-description {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            margin-top: 4rem;
+        }
+
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto;
+            max-width: 900px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1.125rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body class="landing-page">
     <nav class="navbar landing-nav">
@@ -14,45 +134,64 @@
             <i class="fas fa-chart-line"></i>
             <span>B3 Monitor</span>
         </div>
+        <div class="navbar-menu">
+            <a href="{% url 'login' %}" class="btn btn-secondary">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
     </nav>
 
-    <main class="landing-content">
+    <main>
         <div class="hero-section">
             <h1>
                 <i class="fas fa-chart-line"></i>
                 B3 Monitor
             </h1>
-            <p class="hero-subtitle">Stock Market Monitoring Made Easy</p>
+            <p class="hero-subtitle">Smart Stock Market Monitoring for B3</p>
+            <p class="hero-description">
+                Take control of your investments with our intelligent monitoring system. 
+                Set custom price tunnels, receive timely alerts, and make informed decisions 
+                with real-time data from Brazil's leading stock exchange.
+            </p>
             
             <div class="feature-grid">
                 <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>Smart Monitoring</h3>
+                    <p>Customize monitoring intervals for each asset. Set it and forget it - we'll watch the market for you.</p>
+                </div>
+                
+                <div class="feature-card">
                     <i class="fas fa-bell"></i>
-                    <h3>Real-time Alerts</h3>
-                    <p>Get notified when stocks hit your target prices</p>
+                    <h3>Instant Alerts</h3>
+                    <p>Receive email notifications when stocks cross your defined price thresholds, never miss an opportunity.</p>
                 </div>
                 
                 <div class="feature-card">
                     <i class="fas fa-chart-area"></i>
-                    <h3>Price Tracking</h3>
-                    <p>Monitor your favorite stocks with customizable price tunnels</p>
+                    <h3>Visual Analytics</h3>
+                    <p>Track price movements with interactive charts and comprehensive historical data visualization.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <i class="fas fa-clock"></i>
-                    <h3>Flexible Monitoring</h3>
-                    <p>Set custom monitoring intervals for each asset</p>
+            </div>
+
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">B3 Stocks Available</div>
                 </div>
-                
-                <div class="feature-card">
-                    <i class="fas fa-envelope"></i>
-                    <h3>Email Notifications</h3>
-                    <p>Receive timely updates about your monitored assets</p>
+                <div class="stat-card">
+                    <div class="stat-number">1 min</div>
+                    <div class="stat-label">Minimum Interval</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Monitoring</div>
                 </div>
             </div>
 
             <div class="cta-section">
                 <a href="{% url 'login' %}" class="btn btn-primary btn-large">
-                    <i class="fas fa-sign-in-alt"></i>
+                    <i class="fas fa-rocket"></i>
                     Start Monitoring Now
                 </a>
             </div>
@@ -60,7 +199,7 @@
     </main>
 
     <footer class="footer landing-footer">
-        <p>&copy; 2025 B3 Monitor. All rights reserved.</p>
+        <p>&copy; 2025 B3 Monitor.</p>
     </footer>
 </body>
 </html>

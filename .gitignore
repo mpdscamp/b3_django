@@ -1,14 +1,34 @@
+# Python cache and compiled files
 __pycache__/
 *.py[cod]
 *.so
 
-env/
+# Poetry virtual environment cache
+.pdm-python/
+poetry.lock
 
+# Environment variables (Sensitive Data)
+.env
+*.env
+
+# SQLite database
 db.sqlite3
+*.sqlite3
 
+# Celery schedules and results
 celerybeat-schedule.*
+celerybeat.pid
 
+# Log files
 *.log
+logs/
 
+# IDE-specific files
 .vscode/
+.idea/
 *.swp
+
+# Django migrations cache
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo

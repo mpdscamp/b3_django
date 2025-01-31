@@ -1,5 +1,3 @@
-# assets/forms.py
-
 from django import forms
 from .models import Asset, PriceTunnel, Frequency, AvailableAsset
 from django.contrib.auth.forms import AuthenticationForm
