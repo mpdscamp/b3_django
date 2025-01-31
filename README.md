@@ -33,7 +33,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 poetry install
 ```
 
-4. Create .env file with your settings. For example:
+4. Create a .env file with your settings. For example:
 ```
 # SECURITY
 SECRET_KEY={your security key}
